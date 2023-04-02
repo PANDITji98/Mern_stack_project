@@ -1,15 +1,16 @@
 import express  from "express";
 import { createHotel, deleteHotel, findHotel, findHotelById, updateHotel } from "../controllers/hotelController.js";
+import { verifyAdmin } from "../middlewares/authMain.js";
 
 const router = express.Router();
 
-router.post("/createHotel", createHotel)
+router.post("/createHotel", verifyAdmin, createHotel)
 
-router.put("/updateHotel/:hotelID", updateHotel)
+router.put("/updateHotel/:id", verifyAdmin, updateHotel)
 
-router.delete("/deleteHotel/:hotelID", deleteHotel)
+router.delete("/deleteHotel/:id", verifyAdmin, deleteHotel)
 
-router.get("/findHotel/:hotelID", findHotelById)
+router.get("/findHotel/:id", findHotelById)
 
 router.get("/findHotels", findHotel)
 

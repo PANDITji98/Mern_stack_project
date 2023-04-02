@@ -1,12 +1,14 @@
 import express, { urlencoded } from "express";
+import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import adminRoute from "./routes/auth.js";
 import hotelsRoute from "./routes/hotels.js";
 import roomsRoute from "./routes/rooms.js";
 import usersRoute from "./routes/users.js";
-dotenv.config()
+import cors from "cors";
 const app = express();
+dotenv.config()
 
 
 
@@ -25,7 +27,9 @@ mongoose.connection.on("disconnected", ()=>{
 })
 
 //Middlewares
+app.use(cors())
 app.use(express.json())
+app.use(cookieParser())
 // app.use(express.urlencoded())
 
 
@@ -35,7 +39,6 @@ app.use("/api/rooms", roomsRoute)
 app.use("/api/users", usersRoute)
 
 app.use((err,req,res,next)=>{
-    console.log(err)
     const errorStatus = err.status || 500;
     const errormessage = err.message || "Something went wrong!";
     return res.status(errorStatus).json({

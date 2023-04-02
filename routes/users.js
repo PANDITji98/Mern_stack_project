@@ -1,19 +1,22 @@
 import express  from "express";
-import { register } from "../controllers/userController.js";
+import { createuser, deleteuser, finduser, finduserById, updateuser } from "../controllers/userController.js";
+import { verifyAdmin, verifyUser } from "../middlewares/authMain.js";
 
 const router = express.Router();
 
-// router.get("/getAllUsers")
+router.get("/check", verifyAdmin, (req,res,next)=>{
+    res.send("checking")
+})
 
-// router.get("/getUser/:userID")
+router.post("/createuser", createuser)
 
-router.post("/register", register)
+router.put("/updateuser/:id",verifyUser, updateuser)
 
-// router.post("/login")
+router.delete("/deleteuser/:id", verifyUser, deleteuser)
 
-// router.put("/editUser/:userID")
+router.get("/finduser/:id",verifyUser, finduserById)
 
-// router.delete("/deleteUser/:userID")
+router.get("/findusers", verifyAdmin,finduser)
 
 
 export default router

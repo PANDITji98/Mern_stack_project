@@ -1,41 +1,71 @@
 import userSchema from "../models/userSchema.js";
-import bcrypt from "bcrypt";
-import { hashpassword } from "../utils/authFunctions.js";
+import { createError } from "../utils/errorHandling.js";
 
-export const register = async (req, res, next) => {
-  const { username, email, country, img, city, phone, password } = req.body;
+export const createuser = async (req, res, next) => {
+  const newuser = new userSchema(req.body);
+
   try {
-    if (!username || !email || !country || !city || !phone || !password) {
-      return res.status(400).send("Please enter all the credentials to signup");
+    const user = await newuser.save();
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const finduserById = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const user = await userSchema.findById(id);
+    if (!user) {
+      return next(createError(404, "No user found"));
     } else {
-      const existinguser = await userSchema.findOne({ email: email });
-      if (existinguser) {
-        return res.status(401).send("User already exists");
-      } else {
-        const hashedPassword = await hashpassword(password, 10);
-        console.log(hashedPassword);
-        // const stringPass = hashedPassword.toString()
-        const newUser = new userSchema({
-          password: hashedPassword,
-          username,
-          email,
-          country,
-          img,
-          city,
-          phone,
-        });
-        await newUser.save();
-        res.status(201).send("User registered!");
-      }
+      return res.status(200).json(user);
     }
   } catch (error) {
     next(error);
   }
 };
 
-export const login = async (req, res, next) => {
-  const { username, email, password } = req.body;
+export const finduser = async (req, res, next) => {
   try {
+    const user = await userSchema.find();
+    if (!user) {
+      return next(createError(404, "No user found"));
+    } else {
+      return res.status(200).json(user);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateuser = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const user = await userSchema.findByIdAndUpdate(
+      id,
+      { $set: req.body },
+      { new: true }
+    );
+    if (!user) {
+      return next(createError(404, "No user found"));
+    } else {
+      return res.status(200).json(user);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteuser = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const user = await userSchema.findByIdAndDelete(id);
+    if (!user) {
+      return next(createError(404, "No user found"));
+    } else {
+      return res.status(200).json({ Msg: "user deleted" });
+    }
   } catch (error) {
     next(error);
   }

@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
+// import { createError } from "./errorHandling.js";
 
 
 export const hashpassword = async (pass, salt) => {
@@ -20,3 +20,28 @@ export const hashpassword = async (pass, salt) => {
     });
   });
 };
+
+export const validatePassword = async (pass, userPass) => {
+  return new Promise((resolve,reject)=>{
+    bcrypt.compare(pass, userPass , (err,user)=>{
+      if(err){
+        reject (err)
+      } else {
+        resolve(user)
+      }
+    })
+  })
+}
+
+export const generateToken = async (data,key) => {
+  return new Promise((resolve,reject)=>{
+    jwt.sign(data,key , (err,token)=>{
+      if(err){
+        reject(err)
+      } else {
+        resolve(token)
+      }
+    })
+  })
+}
+
