@@ -3,9 +3,9 @@ import jwt from "jsonwebtoken";
 // import { createError } from "./errorHandling.js";
 
 
-export const hashpassword = async (pass, salt) => {
+export const hashpassword = async (pass, saltRounds) => {
   return new Promise((resolve, reject) => {
-    bcrypt.genSalt(salt, (err, salt) => {
+    bcrypt.genSalt(saltRounds, (err, salt) => {
       if (err) {
         reject(err);
       } else {
@@ -36,6 +36,18 @@ export const validatePassword = async (pass, userPass) => {
 export const generateToken = async (data,key) => {
   return new Promise((resolve,reject)=>{
     jwt.sign(data,key , (err,token)=>{
+      if(err){
+        reject(err)
+      } else {
+        resolve(token)
+      }
+    })
+  })
+}
+
+export const verToken = async (data,key) => {
+  return new Promise((resolve,reject)=>{
+    jwt.verify(data,key , (err,token)=>{
       if(err){
         reject(err)
       } else {

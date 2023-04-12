@@ -59,7 +59,7 @@ export const login = async (req, res, next) => {
             { id: existingUser._id, isAdmin: existingUser.isAdmin },
             process.env.JWT_SECRET
           );
-          console.log(token);
+          console.log("Token",token);
           const { password, isAdmin, ...rest } = existingUser._doc;
           res
             .cookie("access_token", token, { httpOnly: true })

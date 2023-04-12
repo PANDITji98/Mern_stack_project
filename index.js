@@ -7,15 +7,15 @@ import hotelsRoute from "./routes/hotels.js";
 import roomsRoute from "./routes/rooms.js";
 import usersRoute from "./routes/users.js";
 import cors from "cors";
+
+
 const app = express();
 dotenv.config()
 
 
-
-
 const connect = async () =>{
     try {
-        mongoose.connect(process.env.MONGO_URL)
+        await mongoose.connect(process.env.MONGO_URL)
         console.log("Connection established with database")
     } catch (error) {
         throw new error
